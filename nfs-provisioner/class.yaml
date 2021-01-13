@@ -1,7 +1,7 @@
-kind: StorageClass
 apiVersion: storage.k8s.io/v1
+kind: StorageClass
 metadata:
-  name: example-nfs
-provisioner: example.com/nfs
+  name: dynamic-nfs
+provisioner: terasology.io/nfs
 mountOptions:
   - vers=4.1

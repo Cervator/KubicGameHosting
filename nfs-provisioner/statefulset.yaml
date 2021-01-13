@@ -101,7 +101,7 @@ spec:
                 - DAC_READ_SEARCH
                 - SYS_RESOURCE
           args:
-            - "-provisioner=example.com/nfs"
+            - "-provisioner=terasology.io/nfs"
           env:
             - name: POD_IP
               valueFrom:
@@ -119,5 +119,5 @@ spec:
               mountPath: /export
       volumes:
         - name: export-volume
-          hostPath:
-            path: /srv
+          persistentVolumeClaim:
+            claimName: base-nfs-pvc

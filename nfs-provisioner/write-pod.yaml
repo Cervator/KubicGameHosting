@@ -10,7 +10,7 @@ spec:
       - "/bin/sh"
     args:
       - "-c"
-      - "touch /mnt/SUCCESS && exit 0 || exit 1"
+      - "touch /mnt/SUCCESS && sleep 300 && exit 0 || exit 1"
     volumeMounts:
       - name: nfs-pvc
         mountPath: "/mnt"

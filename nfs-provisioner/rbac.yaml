@@ -17,7 +17,7 @@ rules:
     verbs: ["create", "update", "patch"]
   - apiGroups: [""]
     resources: ["services", "endpoints"]
-    verbs: ["get"]
+    verbs: ["get", "create", "update"]
   - apiGroups: ["extensions"]
     resources: ["podsecuritypolicies"]
     resourceNames: ["nfs-provisioner"]
@@ -31,7 +31,7 @@ subjects:
   - kind: ServiceAccount
     name: nfs-provisioner
      # replace with namespace where provisioner is deployed
-    namespace: default
+    namespace: nfs
 roleRef:
   kind: ClusterRole
   name: nfs-provisioner-runner
@@ -54,7 +54,7 @@ subjects:
   - kind: ServiceAccount
     name: nfs-provisioner
     # replace with namespace where provisioner is deployed
-    namespace: default
+    namespace: nfs
 roleRef:
   kind: Role
   name: leader-locking-nfs-provisioner

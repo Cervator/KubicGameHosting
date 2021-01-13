@@ -14,7 +14,28 @@ So if that setup is needed for a game server we must come up with a more portabl
 
 ### Installation
 
+Roughly followed original docs from [Deployment](https://github.com/kubernetes-retired/external-storage/blob/master/nfs/docs/deployment.md) and [Usage](https://github.com/kubernetes-retired/external-storage/blob/master/nfs/docs/usage.md)
 
+* Adjust files as needed (final versions included in this repo, including a PVC for the provisioner to use as base storage)
+  * Went with provisioner name `terasology.io/nfs`
+  * Went with namespace `nfs` which means the `rbac.yaml` had to list the namespace explicitly. Also had to add a couple `endpoint` verbs
+  * Note that the `PodSecurityPolicy` in `psp.yaml` is likely to deprecated (maybe removed in k8s 1.22) - had to update its `apiVersion` to get it recognized for now
+* `kubectl apply` the files in the namespace `nfs` (after creating it, if needed)
+  * `kubectl create ns nfs`
+  * `kubectl apply -f psp.yaml`
+  * `kubectl apply -f rbac.yaml`
+  * `kubectl apply -f base-nfs-pvc.yaml -n nfs`
+  * `kubectl apply -f statefulset.yaml -n nfs`
+  * `kubectl apply -f class.yaml`
+* At this point you should have the needed stuff in place. Can validate real quick by applying (and then deleting) the following:
+  * `kubectl apply -f claim.yaml -n nfs`
+  * `kubectl apply -f write-pod.yaml -n nfs`
+  * `kubectl apply -f write-pod2.yaml -n nfs`
+* Try to exec to either of the write pods and check out the contents of `/mnt` - not that they'll only stay live for a few minutes. Don't forget to clean up after validating!
+  
+Note that the included `base-nfs-pvc.yaml` is set to `5Gi` meaning dynamic NFS storage will only allocate up to that amount.
+
+For actual usage in other projects simply declare a PVC with storage class `dynamic-nfs` and make sure it can be satisfied by the available space.
 
 
 ## License & attribution
