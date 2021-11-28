@@ -33,11 +33,13 @@ Roughly followed original docs from [Deployment](https://github.com/kubernetes-r
   * `kubectl apply -f write-pod2.yaml -n nfs`
 * Try to exec to either of the write pods and check out the contents of `/mnt` - not that they'll only stay live for a few minutes. Don't forget to clean up after validating!
   
-Note that the included `base-nfs-pvc.yaml` is set to `5Gi` meaning dynamic NFS storage will only allocate up to that amount. If that is later exceeded the NFS pod may enter a crash loop until more space is added (the volume can be resized on the fly). 
+Note that the included `base-nfs-pvc.yaml` is set to `15Gi` meaning dynamic NFS storage will only allocate up to that amount. If that is later exceeded the NFS pod may enter a crash loop until more space is added (the volume can be resized on the fly). 
 
 For actual usage in other projects simply declare a PVC with storage class `dynamic-nfs` and make sure it can be satisfied by the available space.
 
 If the base volume runs out of space bad things may happen to the virtual volumes it hosts! One event caused a virtual volume's PVC to go back, with an associated pod using it timing out trying to mount the volume. Deleting the volume also hung, and needed [this solution](https://veducate.co.uk/kubernetes-pvc-terminating/) to clear out (in short patch the PVC with `kubectl patch pvc [PVC name] -p '{"metadata":{"finalizers":null}}'`) - but even after that the provisioner pod failed. Cleared out everything since the shared volume was just meant for backups and utility to try fresh.
+
+Additionally if a pod is tied to a volume that goes bad it too may stall on trying to delete. You can attempt an operation like the following to see if it helps: `kubectl delete pods [pod name] --grace-period=0 --force`
 
 
 ## License & attribution
