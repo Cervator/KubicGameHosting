@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kgh-lb-svc
+  labels:
+    game-lb: kgh-lb
+spec:
+  type: LoadBalancer
+  ports:
+    - name: valheim4-port-1
+      nodePort: 31486
+      port: 31486
+      protocol: UDP
+      targetPort: 31486
+    - name: valheim4-port-2
+      nodePort: 31487
+      port: 31487
+      protocol: UDP
+      targetPort: 31487
+    - name: valheim4-port-3
+      nodePort: 31488
+      port: 31488
+      protocol: UDP
+      targetPort: 31488
+    - name: valheim5-port-1
+      nodePort: 31496
+      port: 31496
+      protocol: UDP
+      targetPort: 31496
+    - name: valheim5-port-2
+      nodePort: 31497
+      port: 31497
+      protocol: UDP
+      targetPort: 31497
+    - name: valheim5-port-3
+      nodePort: 31498
+      port: 31498
+      protocol: UDP
+      targetPort: 31498
+  selector:
+    game-lb: kgh-lb
